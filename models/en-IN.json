@@ -1,0 +1,36 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "setup my lego device",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "CreateReminderIntent",
+          "slots": [],
+          "samples": [
+            "reminde me",
+            "add reminder",
+            "create reminder"
+          ]
+        }
+      ],
+      "types": []
+    }
+  },
+  "version": "3"
+}
