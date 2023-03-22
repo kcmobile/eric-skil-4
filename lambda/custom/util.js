@@ -2,12 +2,12 @@ const AWS = require('aws-sdk');
 
 const s3SigV4Client = new AWS.S3({
     signatureVersion: 'v4',
-    region: process.env.S3_PERSISTENCE_REGION
+    region: process.env.S3_PERSISTENCE_REGION ? process.env.S3_PERSISTENCE_REGION : "ap-south-1"
 });
 
 module.exports.getS3PreSignedUrl = function getS3PreSignedUrl(s3ObjectKey) {
 
-    const bucketName = process.env.S3_PERSISTENCE_BUCKET;
+    const bucketName = process.env.S3_PERSISTENCE_REGION ? process.env.S3_PERSISTENCE_REGION : "ap-south-1";
     const s3PreSignedUrl = s3SigV4Client.getSignedUrl('getObject', {
         Bucket: bucketName,
         Key: s3ObjectKey,
