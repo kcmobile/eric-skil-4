@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "bro code two",
+      "invocationName": "change me",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
@@ -16,37 +16,29 @@
           "samples": []
         },
         {
+          "name": "HelloWorld",
+          "slots": [],
+          "samples": [
+            "hello",
+            "how are you",
+            "say hi world",
+            "say hi",
+            "hi",
+            "say hello world",
+            "say hello"
+          ]
+        },
+        {
           "name": "AMAZON.NavigateHomeIntent",
           "samples": []
         },
         {
           "name": "AMAZON.FallbackIntent",
           "samples": []
-        },
-        {
-          "name": "configureOtp",
-          "slots": [
-            {
-              "name": "otp",
-              "type": "AMAZON.NUMBER"
-            }
-          ],
-          "samples": [
-            "{otp} is my otp",
-            "{otp}",
-            "my otp is {otp}"
-          ]
-        },
-        {
-          "name": "confirmOtpStatus",
-          "slots": [],
-          "samples": [
-            "yes"
-          ]
         }
       ],
       "types": []
     }
   },
-  "version": "6"
+  "version": "1"
 }
