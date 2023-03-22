@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "setup my gaming skill",
+      "invocationName": "bro code",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
