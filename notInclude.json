@@ -1,0 +1,10 @@
+{
+    "key": {
+        "permissions": [
+            {
+              "name": "alexa::alerts:reminders:skill:readwrite"
+            }
+          ]  
+    }
+}
+    
