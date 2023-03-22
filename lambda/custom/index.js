@@ -1,274 +1,156 @@
+/* *
+ * This sample demonstrates handling intents from an Alexa skill using the Alexa Skills Kit SDK (v2).
+ * Please visit https://alexa.design/cookbook for additional examples on implementing slots, dialog management,
+ * session persistence, api calls, and more.
+ * */
 const Alexa = require('ask-sdk-core');
 
 const LaunchRequestHandler = {
-  canHandle(handlerInput) {
-    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
-  },
-  handle(handlerInput) {
-    const { permissions } = handlerInput.requestEnvelope.context.System.user;
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
+    },
+    handle(handlerInput) {
+        const speakOutput = 'Welcome, you can say Hello or Help. Which would you like to try?';
 
-    if (!permissions) {
-
-      handlerInput.responseBuilder
-        .speak("This skill needs permission to access your reminders.")
-        .addDirective({
-          type: "Connections.SendRequest",
-          name: "AskFor",
-          payload: {
-            "@type": "AskForPermissionsConsentRequest",
-            "@version": "1",
-            "permissionScope": "alexa::alerts:reminders:skill:readwrite"
-          },
-          token: ""
-        });
-
-    } else {
-      handlerInput.responseBuilder
-        .speak("Hello. You can say 'remind me' to set a reminder.")
-        .reprompt("Say: 'remind me' to set a reminder.")
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
     }
-
-    return handlerInput.responseBuilder
-      .getResponse();
-  }
 };
 
-const ConnectionsResponsetHandler = {
-  canHandle(handlerInput) {
-    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'Connections.Response';
-  },
-  handle(handlerInput) {
-    const { permissions } = handlerInput.requestEnvelope.context.System.user;
+const HelloWorldIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
+    },
+    handle(handlerInput) {
+        const speakOutput = 'Hello World!';
 
-    //console.log(JSON.stringify(handlerInput.requestEnvelope));
-    //console.log(handlerInput.requestEnvelope.request.payload.status);
-
-    const status = handlerInput.requestEnvelope.request.payload.status;
-
-
-    if (!permissions) {
-      return handlerInput.responseBuilder
-        .speak("I didn't hear your answer. This skill requires your permission.")
-        .addDirective({
-          type: "Connections.SendRequest",
-          name: "AskFor",
-          payload: {
-            "@type": "AskForPermissionsConsentRequest",
-            "@version": "1",
-            "permissionScope": "alexa::alerts:reminders:skill:readwrite"
-          },
-          token: "user-id-could-go-here"
-        })
-        .getResponse();
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .getResponse();
     }
-
-    switch (status) {
-      case "ACCEPTED":
-        handlerInput.responseBuilder
-          .speak("Now that you've provided permission - you can say: set a reminder.")
-          .reprompt('To set a reminder say: set a reminder.')
-        break;
-      case "DENIED":
-        handlerInput.responseBuilder
-          .speak("Without permissions, I can't set a reminder. So I guess that's goodbye.");
-        break;
-      case "NOT_ANSWERED":
-
-        break;
-      default:
-        handlerInput.responseBuilder
-          .speak("Now that you've provided permission - you can say: set a reminder.")
-          .reprompt('To set a reminder say: set a reminder.')
-    }
-
-    return handlerInput.responseBuilder
-      .getResponse();
-  }
-};
-
-const CreateReminderIntentHandler = {
-  canHandle(handlerInput) {
-    const { request } = handlerInput.requestEnvelope;
-    return request.type === 'IntentRequest' && request.intent.name === 'CreateReminderIntent';
-  },
-  async handle(handlerInput) {
-    const { requestEnvelope, serviceClientFactory, responseBuilder } = handlerInput;
-    const consentToken = requestEnvelope.context.System.user.permissions
-      && requestEnvelope.context.System.user.permissions.consentToken;
-      
-    const yourDeviceID = requestEnvelope.context.System.device.deviceId;
-    console.log(yourDeviceID);
-    if (!consentToken) {
-      return responseBuilder
-        .speak('Please enable reminders permission in the Amazon Alexa app.')
-        .withAskForPermissionsConsentCard(['alexa::alerts:reminders:skill:readwrite'])
-        .getResponse();
-    }
-
-    try {
-      const speechText = "Alright! I've scheduled a reminder for you.";
-
-      const ReminderManagementServiceClient = serviceClientFactory.getReminderManagementServiceClient();
-    //   var yourDeviceID = this.event.context.System.device.deviceId;
-      
-      const reminderPayload = {
-        "trigger": {
-          "type": "SCHEDULED_RELATIVE",
-          "offsetInSeconds": "10",
-          "timeZoneId": "America/New_York"
-        },
-        "alertInfo": {
-          "spokenInfo": {
-            "content": [{
-              "locale": "en-US",
-              "text": "1 First learn about reminders : "+yourDeviceID,
-              "ssml": "<speak> Hey Suraj, ERIC wants to know are you safe </speak>"
-            }]
-          }
-        },
-        "pushNotification": {
-          "status": "ENABLED"
-        }
-      };
-
-      
-      const reminderPayload1 = {
-        "trigger": {
-          "type": "SCHEDULED_RELATIVE",
-          "offsetInSeconds": "30",
-          "timeZoneId": "America/New_York"
-        },
-        "alertInfo": {
-          "spokenInfo": {
-            "content": [{
-              "locale": "en-US",
-              "text": "2 Second learn about reminders : "+yourDeviceID,
-              "ssml": "<speak> Hey Suraj, ERIC wants to know are you safe </speak>"
-            }]
-          }
-        },
-        "pushNotification": {
-          "status": "ENABLED"
-        }
-      };
-      
-      const reminderPayload2 = {
-        "trigger": {
-          "type": "SCHEDULED_RELATIVE",
-          "offsetInSeconds": "50",
-          "timeZoneId": "America/New_York"
-        },
-        "alertInfo": {
-          "spokenInfo": {
-            "content": [{
-              "locale": "en-US",
-              "text": "3 Third learn about reminders : "+yourDeviceID,
-              "ssml": "<speak> Hey Suraj, ERIC wants to know are you safe </speak>"
-            }]
-          }
-        },
-        "pushNotification": {
-          "status": "ENABLED"
-        }
-      };
-
-      await ReminderManagementServiceClient.createReminder(reminderPayload);
-      await ReminderManagementServiceClient.createReminder(reminderPayload1);
-      await ReminderManagementServiceClient.createReminder(reminderPayload2);
-      return responseBuilder
-        .speak(speechText)
-        .getResponse();
-
-    } catch (error) {
-      console.error(error);
-      return responseBuilder
-        .speak('Something went wrong.')
-        .getResponse();
-    }
-  }
-};
-
-const CancelAndStopIntentHandler = {
-  canHandle(handlerInput) {
-    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-      && (Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.CancelIntent'
-        || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
-  },
-  handle(handlerInput) {
-    const speakOutput = 'Goodbye!';
-    return handlerInput.responseBuilder
-      .speak(speakOutput)
-      .getResponse();
-  }
-};
-
-const SessionEndedRequestHandler = {
-  canHandle(handlerInput) {
-    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'SessionEndedRequest';
-  },
-  handle(handlerInput) {
-    // Any cleanup logic goes here.
-    return handlerInput.responseBuilder.getResponse();
-  }
 };
 
 const HelpIntentHandler = {
-  canHandle(handlerInput) {
-    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-      && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
-  },
-  handle(handlerInput) {
-    const speakOutput = 'You can say hello to me! How can I help?';
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
+    },
+    handle(handlerInput) {
+        const speakOutput = 'You can say hello to me! How can I help?';
 
-    return handlerInput.responseBuilder
-      .speak(speakOutput)
-      .reprompt(speakOutput)
-      .getResponse();
-  }
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+    }
 };
 
+const CancelAndStopIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && (Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.CancelIntent'
+                || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
+    },
+    handle(handlerInput) {
+        const speakOutput = 'Goodbye!';
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .getResponse();
+    }
+};
+/* *
+ * FallbackIntent triggers when a customer says something that doesn’t map to any intents in your skill
+ * It must also be defined in the language model (if the locale supports it)
+ * This handler can be safely added but will be ingnored in locales that do not support it yet 
+ * */
+const FallbackIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.FallbackIntent';
+    },
+    handle(handlerInput) {
+        const speakOutput = 'Sorry, I don\'t know about that. Please try again.';
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+    }
+};
+/* *
+ * SessionEndedRequest notifies that a session was ended. This handler will be triggered when a currently open 
+ * session is closed for one of the following reasons: 1) The user says "exit" or "quit". 2) The user does not 
+ * respond or says something that does not match an intent defined in your voice model. 3) An error occurs 
+ * */
+const SessionEndedRequestHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'SessionEndedRequest';
+    },
+    handle(handlerInput) {
+        console.log(`~~~~ Session ended: ${JSON.stringify(handlerInput.requestEnvelope)}`);
+        // Any cleanup logic goes here.
+        return handlerInput.responseBuilder.getResponse(); // notice we send an empty response
+    }
+};
+/* *
+ * The intent reflector is used for interaction model testing and debugging.
+ * It will simply repeat the intent the user said. You can create custom handlers for your intents 
+ * by defining them above, then also adding them to the request handler chain below 
+ * */
 const IntentReflectorHandler = {
-  canHandle(handlerInput) {
-    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
-  },
-  handle(handlerInput) {
-    const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
-    const speakOutput = `You just triggered ${intentName}`;
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
+    },
+    handle(handlerInput) {
+        const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
+        const speakOutput = `You just triggered ${intentName}`;
 
-    return handlerInput.responseBuilder
-      .speak(speakOutput)
-      //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
-      .getResponse();
-  }
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .getResponse();
+    }
 };
-
+/**
+ * Generic error handling to capture any syntax or routing errors. If you receive an error
+ * stating the request handler chain is not found, you have not implemented a handler for
+ * the intent being invoked or included it in the skill builder below 
+ * */
 const ErrorHandler = {
-  canHandle() {
-    return true;
-  },
-  handle(handlerInput, error) {
-    console.log(`~~~~ Error handled: ${error.stack}`);
-    const speakOutput = `Sorry, I had trouble doing what you asked. Please try again.`;
+    canHandle() {
+        return true;
+    },
+    handle(handlerInput, error) {
+        const speakOutput = 'Sorry, I had trouble doing what you asked. Please try again.';
+        console.log(`~~~~ Error handled: ${JSON.stringify(error)}`);
 
-    return handlerInput.responseBuilder
-      .speak(speakOutput)
-      .reprompt(speakOutput)
-      .getResponse();
-  }
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+    }
 };
 
+/**
+ * This handler acts as the entry point for your skill, routing all request and response
+ * payloads to the handlers above. Make sure any new handlers or interceptors you've
+ * defined are included below. The order matters - they're processed top to bottom 
+ * */
 exports.handler = Alexa.SkillBuilders.custom()
-  .addRequestHandlers(
-    LaunchRequestHandler,
-    ConnectionsResponsetHandler,
-    CreateReminderIntentHandler,
-    HelpIntentHandler,
-    CancelAndStopIntentHandler,
-    SessionEndedRequestHandler,
-    IntentReflectorHandler, // make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
-  )
-  .addErrorHandlers(
-    ErrorHandler,
-  )
-  .withApiClient(new Alexa.DefaultApiClient())
-  .lambda();
+    .addRequestHandlers(
+        LaunchRequestHandler,
+        HelloWorldIntentHandler,
+        HelpIntentHandler,
+        CancelAndStopIntentHandler,
+        FallbackIntentHandler,
+        SessionEndedRequestHandler,
+        IntentReflectorHandler)
+    .addErrorHandlers(
+        ErrorHandler)
+    .withCustomUserAgent('sample/hello-world/v1.2')
+    .lambda();

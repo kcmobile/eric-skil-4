@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "bro code",
+      "invocationName": "change me",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
@@ -16,22 +16,29 @@
           "samples": []
         },
         {
+          "name": "HelloWorldIntent",
+          "slots": [],
+          "samples": [
+            "hello",
+            "how are you",
+            "say hi world",
+            "say hi",
+            "hi",
+            "say hello world",
+            "say hello"
+          ]
+        },
+        {
           "name": "AMAZON.NavigateHomeIntent",
           "samples": []
         },
         {
-          "name": "CreateReminderIntent",
-          "slots": [],
-          "samples": [
-            "reminde me",
-            "add reminder",
-            "create reminder"
-          ]
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
         }
       ],
       "types": []
     }
   },
-  "version": "3"
+  "version": "1"
 }
-
