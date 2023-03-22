@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "call bro",
+      "invocationName": "bro code two",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
@@ -22,11 +22,31 @@
         {
           "name": "AMAZON.FallbackIntent",
           "samples": []
+        },
+        {
+          "name": "configureOtp",
+          "slots": [
+            {
+              "name": "otp",
+              "type": "AMAZON.NUMBER"
+            }
+          ],
+          "samples": [
+            "{otp} is my otp",
+            "{otp}",
+            "my otp is {otp}"
+          ]
+        },
+        {
+          "name": "confirmOtpStatus",
+          "slots": [],
+          "samples": [
+            "yes"
+          ]
         }
       ],
       "types": []
     }
   },
-  "version": "1"
+  "version": "6"
 }
-
