@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "setup my lego device alexa",
+      "invocationName": "setup my gaming device ",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
