@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "auto eric",
+      "invocationName": "change me",
       "intents": [
         {
           "name": "AMAZON.CancelIntent",
@@ -16,22 +16,29 @@
           "samples": []
         },
         {
+          "name": "HelloWorldIntent",
+          "slots": [],
+          "samples": [
+            "hello",
+            "how are you",
+            "say hi world",
+            "say hi",
+            "hi",
+            "say hello world",
+            "say hello"
+          ]
+        },
+        {
           "name": "AMAZON.NavigateHomeIntent",
           "samples": []
         },
         {
-          "name": "AMAZON.YesIntent",
-          "samples": [
-            "sounds good"
-          ]
-        },
-        {
-          "name": "AMAZON.NoIntent",
+          "name": "AMAZON.FallbackIntent",
           "samples": []
         }
       ],
       "types": []
     }
   },
-  "version": "5"
+  "version": "1"
 }
